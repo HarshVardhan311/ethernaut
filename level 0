@@ -1,0 +1,6 @@
+What the contract does:
+Stores a password as a public string variable set at deployment. Has an authenticate() function that compares a submitted passkey against the stored password using keccak256 hashing. Sets a cleared boolean to true if they match.
+The vulnerability:
+The password is declared as a public state variable. Anyone can call contract.password() directly and retrieve it, bypassing the intended authentication entirely.
+How I exploited it:
+Called await contract.password() to retrieve the plaintext password ("ethernaut0"), then submitted it via await contract.authenticate("ethernaut0").
