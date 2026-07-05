@@ -1,0 +1,26 @@
++ What the contract does:
++ Tracks contributions per address in a mapping. Whoever has contributed the most
+  becomes owner via contribute(), capped at under 0.001 ether per call. The owner
+  can call withdraw() to drain the entire contract balance.
+
++ The vulnerability:
++ The receive() fallback reassigns ownership based on a weak, disconnected check —
+  it only requires contributions[msg.sender] > 0, not that the sender is the
+  highest contributor. Any account that has contributed even 1 wei can become
+  owner simply by sending ETH directly to the contract.
+
++ How I exploited it:
++ Called await contract.contribute({ value: 1 }) to satisfy contributions[msg.sender] > 0,
+  then sent a plain transaction directly to the contract address via
+  web3.eth.sendTransaction({ to: contract.address, value: ... }), triggering
+  receive() and setting owner = player. Finally called await contract.withdraw()
+  to drain the contract balance.
+
++ Impact:
++ Complete loss of funds and total compromise of the ownership model — any
+  external account can become owner for negligible cost and drain the contract.
+
++ Fix:
++ Never mutate privileged state like owner inside receive()/fallback(). Ownership
+  transfer should go through an explicit, access-controlled function (e.g.
+  transferOwnership() restricted by onlyOwner).
