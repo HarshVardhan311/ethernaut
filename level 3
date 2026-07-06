@@ -1,0 +1,8 @@
+What the contract does:
+The contract collects the users' funds through allocate. It returned the funds to the allocators viafunction allocate.
+The vulnerability:
+It also had an onlyOwner function collectAllocations through which the owner could collect all the funds.
+How I exploited it:
+The vulnerability was that the owner was to be set in the supposed constructor. But the constructor name had a typo because of which it didn't become a constructor and anyone could call it at any time. I became the owner from there and drained the funds.
+Prevention:
+Always make sure that the constructor name is the same as the contract name and avoid putting privileges in functions without access control.
