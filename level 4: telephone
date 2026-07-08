@@ -1,0 +1,8 @@
+What the contract does:
+The contract was made to change the ownership of a telephone directory.
+The vulnerability:
+It had a changeOwner function which had a logical error.
+They wrote: tx.origin != msg.sender instead of tx.origin == msg.sender
+The original intent was to make sure that if the entity sending the ownership change request is a bot, the change won't happen but this error made it so that only if the entity requesting the change is a bot, will the request be successful.
+How I exploited it:
+I created a contract and sent a request to changeOwner by passing it my address. Since the original address starting the chain and the direct sender weren't the same addresses, the ownership change wasn't successful.
