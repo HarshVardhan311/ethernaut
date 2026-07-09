@@ -1,0 +1,9 @@
+What the contract does:
+The contract lets me withdraw my funds.
+The vulnerability:
+The condition for withdrawal was "require(balances[msg.sender] - _value >= 0)".
+The problem with this is that if balances[msg.sender] < _value, underflow will happen and the value balances[msg.sender] - _value will become greater than ), and almost always a huge no., which will likely drain all of the funds held by that contract.
+How I exploited it:
+I transferred 21 tokens to an address. The balance in my account did the math 20-21 and went through an underflow and gave me 2^256-1 tokens.
+Prevention:
+Always use  require(balances[msg.sender] > _value) so that no chance of underflow is there. Anyways now this problem is handled by SafeMath and pragma solidity ^0.8.0 .
