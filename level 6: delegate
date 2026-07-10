@@ -1,1 +1,15 @@
+Objective
+Claim ownership of the `Delegation` contract instance.
+Vulnerability
+The challenge consists of two contracts: `Delegate` and `Delegation`. 
 
+1. **Storage Layout Match:** Both contracts define `address public owner;` as their very first state variable (Slot 0).
+2. **The Target Function:** The `Delegate` contract has a function called `pwn()` that sets `owner = msg.sender;`.
+3. **The Gateway:** The `Delegation` contract implements a `fallback()` function that forwards all unhandled transaction payloads using `delegatecall`:
+   ```solidity
+   fallback() external {
+       (bool result,) = address(delegate).delegatecall(msg.data);
+       if (result) {
+           this.refundMinusGas();
+       }
+   }
