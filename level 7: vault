@@ -1,1 +1,10 @@
-
+What the contract does:
+The contract is securing a password
+The vulnerability:
+A private variable declared directly inside the contract can't be viewed by another contract but it can be used by anyone viewing the nodes ir web3 functions.
+How I exploited it:
+I knew that variable _password is stored in slot 1, and address of the instance so I used
+await web3.eth.getStorageAt("0x67E874C280602e3F2219133B59fA0f64d53997aB", 1)
+to get the password.
+Prevention:
+Any secret info shouldn't be stored inside a private variable. It should always be stored with the help of commit reveal schemes or zero knowledge proofs.
